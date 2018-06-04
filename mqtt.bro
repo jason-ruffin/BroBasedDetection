@@ -16,4 +16,4 @@ event packet_contents(c: connection, contents: string){
 event bro_init() &priority=5
     {
     Log::create_stream(MQTT::LOG, [$columns=Info, $path="MQTT"]);
-    }                                                        }
+    }
