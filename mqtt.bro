@@ -16,7 +16,7 @@ module MQTT;
 
  event packet_contents(c: connection , contents: string)
  {
-    NOTICE([$note = Mqtt::Subscribe, $msg=fmt("%s attempts to subscribe to all topics.", c$id$orig_h)]);
+
         local info: Info;
         info$ts = c$start_time;
         info$id = c$id;
@@ -30,7 +30,7 @@ module MQTT;
             if(clean("82") in info$topic){
                 NOTICE([$note = Mqtt::Subscribe, $msg=fmt("the topi is: %s ", info$topic)]);            }
         }
-
+    Log::write(MQTT::LOG, info);
  }
 
  event bro_init() &priority=5
