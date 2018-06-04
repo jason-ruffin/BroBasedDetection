@@ -16,7 +16,6 @@ module MQTT;
 
  event packet_contents(c: connection , contents: string)
  {
-        NOTICE([$note = Mqtt::Subscribe, $msg=fmt("%s attempts to subscribe to all topics.", c$id$orig_h)]);
         local info: Info;
         info$ts = c$start_time;
         info$id = c$id;
@@ -24,12 +23,19 @@ module MQTT;
         info$msg_len = contents[1:2];
         if(info$msg_type == "\x82")
         {
-            Log::write(MQTT::LOG, info);
             info$topic_len = contents[2:4];
             info$topic = clean(contents[5:]);
+            Log::write(MQTT::LOG, info);
             NOTICE([$note = Mqtt::Subscribe, $msg=fmt("the topi is: %s ", info$topic)]);
             if(clean("82") in info$topic){
-                NOTICE([$note = Mqtt::Subscribe, $msg=fmt("the topi is: %s ", info$topic)]);            }
+                NOTICE([$note = Mqtt::Subscribe, $msg=fmt("the topi is: %s ", info$topic)]);
+                info$topic = gsub(info$topic, /82/, "");
+                if(clean("82") in info$topic){
+                    NOTICE([$note = Mqtt::Subscribe, $msg=fmt("the topi is: %s ", info$topic)]);
+                    info$topic = gsub(info$topic, /82/, "");
+                }
+            }
+
         }
 
  }
