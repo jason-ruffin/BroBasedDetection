@@ -16,6 +16,7 @@ module MQTT;
 
  event packet_contents(c: connection , contents: string)
  {
+        NOTICE([$note = Mqtt::Subscribe, $msg=fmt("%s attempts to subscribe to all topics.", c$id$orig_h)]);
         local info: Info;
         info$ts = c$start_time;
         info$id = c$id;
