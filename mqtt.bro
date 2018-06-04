@@ -30,6 +30,9 @@ module MQTT;
  }
 
  event bro_init() &priority=5
-     {
-     Log::create_stream(MQTT::LOG, [$columns=Info, $path="MQTT"]);
+    {
+    Log::create_stream(MQTT::LOG, [$columns=Info, $path="MQTT"]);
+    local f = Log::get_filter(MQTT::LOG, "default");
+    f$path = "mqtt";
+    Log::add_filter(MQTT::LOG, f);
      }
