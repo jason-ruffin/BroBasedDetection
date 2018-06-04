@@ -26,8 +26,10 @@ module MQTT;
      info$topic_len = contents[2:4];
      info$topic = contents[5:];
      Log::write(MQTT::LOG, info);
+     NOTICE([$note = Mqtt::Subscribe, $msg=fmt("Topic: %s", info$topic)]);
      if(/\x82/ in info$topic){
             Log::write(MQTT::LOG, info);
+            NOTICE([$note = Mqtt::Subscribe, $msg=fmt("Topic: %s", info$topic)]);
         }
    }
  }
