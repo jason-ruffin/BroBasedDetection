@@ -4,25 +4,24 @@ export {
     redef enum Log::ID += { LOG };
     type Info: record {
         ts: time        &log;
-        uid: string     &log;
         id: conn_id     &log;
-        dns: DNS::Info  &log &optional;
     };
+
+    global log_dns: event(rec: Info);
 }
 
 redef enum Notice::Type +={
-    DNS::Exfiltration    
+    Exfiltration    
 };
 
-event connection_established(c: connection)
+event dns_request(c: connection, msg: dns_msg, query: string, qtype: count, qclass: count)
     {    
-    local rec: Foo::Info = [$dns_query = c$dns$query];
-    c$foo = rec;
-    if(|c$dns$query| > 52)
-        NOTICE([$note = DNS::Exfiltration, $msg=fmt("Long Domain. Possible DNS exfiltration/tunnel by %s. Offending domain name:%s", c$id$resp_h, c$dns$query]);
+    if(|query| > 52)
+        NOTICE([$note = Exfiltration, $msg=fmt("Long Domain. Possible DNS exfiltration/tunnel by %s. Offending domain name:%s", c$id$resp_h, c$dns$query)]);
     }
+
 
 event bro_init() &priority=5
     {
-    Log::create_stream(Foo::LOG, [$columns=Info, $path="foo"]);
+    Log::create_stream(Foo::LOG, [$columns=Info, $ev = log_dns, $path="foo"]);
     }
