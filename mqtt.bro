@@ -14,18 +14,23 @@ module MQTT;
  }
 
 
- event packet_contents(c: connection , contents: string){
+ event packet_contents(c: connection , contents: string)
+ {
     NOTICE([$note = Mqtt::Subscribe, $msg=fmt("%s attempts to subscribe to all topics.", c$id$orig_h)]);
-    local info: Info;
-    info$ts = c$start_time;
-    info$id = c$id;
-    info$msg_type = contents[:1];
-    info$msg_len = contents[:3];
-    if(info$msg_type == "\x82"){
-        info$topic_len = contents[2:4];
-        info$topic = contents[5:];
-        Log::write(MQTT::LOG, info);
-    }
+        local info: Info;
+        info$ts = c$start_time;
+        info$id = c$id;
+        info$msg_type = contents[:1];
+        info$msg_len = contents[1:2];
+        if(info$msg_type == "\x82")
+        {
+            info$topic_len = contents[2:4];
+            info$topic = clean(contents[5:]);
+            Log::write(MQTT::LOG, info);
+            if(clean("82") in info$topic){
+                Log::write(MQTT::LOG, info);
+            }
+        }
 
  }
 
@@ -35,4 +40,4 @@ module MQTT;
     local f = Log::get_filter(MQTT::LOG, "default");
     f$path = "mqtt";
     Log::add_filter(MQTT::LOG, f);
-     }
+    }
