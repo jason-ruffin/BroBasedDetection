@@ -16,28 +16,17 @@ module MQTT;
 
  event packet_contents(c: connection , contents: string)
  {
-        local info: Info;
-        info$ts = c$start_time;
-        info$id = c$id;
-        info$msg_type = contents[:1];
-        info$msg_len = contents[1:2];
-        if(info$msg_type == "\x82")
-        {
-            info$topic_len = contents[2:4];
-            info$topic = clean(contents[5:]);
-            Log::write(MQTT::LOG, info);
-            NOTICE([$note = Mqtt::Subscribe, $msg=fmt("the topi is: %s ", info$topic)]);
-            if(clean("82") in info$topic){
-                NOTICE([$note = Mqtt::Subscribe, $msg=fmt("the topi is: %s ", info$topic)]);
-                info$topic = gsub(info$topic, /82/, "");
-                if(clean("82") in info$topic){
-                    NOTICE([$note = Mqtt::Subscribe, $msg=fmt("the topi is: %s ", info$topic)]);
-                    info$topic = gsub(info$topic, /82/, "");
-                }
-            }
-
-        }
-
+   NOTICE([$note = Mqtt::Subscribe, $msg=fmt("%s attempts to subscribe to all topics.", c$id$orig_h)]);
+   local info: Info;
+   info$ts = c$start_time;
+   info$id = c$id;
+   info$msg_type = contents[:1];
+   info$msg_len = contents[:3];
+   if(info$msg_type == "\x82"){
+     info$topic_len = contents[2:4];
+     info$topic = contents[5:];
+     Log::write(MQTT::LOG, info);
+   }
  }
 
  event bro_init() &priority=5
