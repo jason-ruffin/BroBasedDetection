@@ -21,5 +21,5 @@ event dns_request(c: connection, msg: dns_msg, query: string, qtype: count, qcla
 
 event bro_init() &priority=5
     {
-    Log::create_stream(Foo::LOG, [$columns=Info, $path="foo"]);
+    Log::create_stream(Foo::LOG, [$columns=Info, $path="Foo"]);
     }
