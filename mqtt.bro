@@ -16,20 +16,21 @@ module MQTT;
 
  event packet_contents(c: connection , contents: string)
  {
-   NOTICE([$note = Mqtt::Subscribe, $msg=fmt("%s attempts to subscribe to all topics.", c$id$orig_h)]);
-   local info: Info;
-   info$ts = c$start_time;
-   info$id = c$id;
-   info$msg_type = contents[:1];
-   info$msg_len = contents[:3];
-   if(info$msg_type == "\x82"){
-     info$topic_len = contents[2:4];
-     info$topic = contents[5:];
-     Log::write(MQTT::LOG, info);
-     NOTICE([$note = Mqtt::Subscribe, $msg=fmt("Topic: %s", info$topic)]);
-     if(/\x82/ in info$topic){
+    NOTICE([$note = Mqtt::Subscribe, $msg=fmt("%s attempts to subscribe to all topics.", c$id$orig_h)]);
+
+    local info: Info;
+    info$ts = c$start_time;
+    info$id = c$id;
+    info$msg_type = contents[:1];
+    info$msg_len = contents[:3];
+    if(info$msg_type == "\x82"){
+        info$topic_len = contents[2:4];
+        info$topic = contents[5:];
+        Log::write(MQTT::LOG, info);
+        NOTICE([$note = Mqtt::Subscribe, $msg=fmt("%s attempts to subscribe to all topics.", c$id$orig_h)]);
+        if(/\x82/ in info$topic){
             Log::write(MQTT::LOG, info);
-            NOTICE([$note = Mqtt::Subscribe, $msg=fmt("Topic: %s", info$topic)]);
+            NOTICE([$note = Mqtt::Subscribe, $msg=fmt("%s attempts to subscribe to all topics.", c$id$orig_h)]);
         }
    }
  }
